@@ -7,7 +7,8 @@ cmake_minimum_required(VERSION 3.10)
 
 project(DICProject)
 
-# find_package(OpenCV CONFIG REQUIRED)
+# set(OpenCV_ROOT "${VCPKG_INSTALLED_DIR}/x64-windows/share/opencv4")
+find_package(OpenCV REQUIRED)
 # find_package(fftw3 CONFIG REQUIRED)
 # find_package(Ceres CONFIG REQUIRED)
 
@@ -16,10 +17,10 @@ SET(ncorr_src ../src/ncorr.cpp ../src/Strain2D.cpp ../src/Disp2D.cpp ../src/Data
 SET(ncorr_h ../include/ncorr.h ../include/Strain2D.h ../include/Disp2D.h ../include/Data2D.h ../include/ROI2D.h ../include/Image2D.h ../include/Array2D.h)
 
 # Set include directory
-INCLUDE_DIRECTORIES(../include)
+INCLUDE_DIRECTORIES(./include)
 
 # Add library
-ADD_LIBRARY(ncorr STATIC ${ncorr_src})
+ADD_LIBRARY(ncorr STATIC ${ncorr_src} ${ncorr_h})
 
 # Set C++11 support
 set_property(TARGET ncorr PROPERTY CXX_STANDARD 11)
@@ -32,8 +33,13 @@ set_property(TARGET ncorr PROPERTY CXX_STANDARD_REQUIRED ON)
 # 	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
 # endif()
 
-add_executable(DICProject test.cpp)
+# include_directories(${OpenCV_INCLUDE_DIRS})
+# add_executable(DICProjec1t ${ncorr_src})
+add_executable(DICProject ncorr_test.cpp)
 
-# target_link_libraries(DICProject PUBLIC opencv::opencv)
+message(STATUS "OpenCV libraries: ${OpenCV_LIBS}")
+
+target_link_libraries(DICProject ncorr)
+target_link_libraries(DICProject ${OpenCV_LIBS})
 # target_link_libraries(DICProject PUBLIC fftw3::fftw3)
 # target_link_libraries(DICProject PUBLIC SuiteSparse::amd SuiteSparse::btf SuiteSparse::klu SuiteSparse::ldl)
