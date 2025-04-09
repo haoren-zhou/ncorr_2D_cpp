@@ -1,5 +1,9 @@
 {
   "dependencies": [
-    "opencv"
+    "fftw3",
+    "openblas",
+    "opencv",
+    "suitesparse-cholmod",
+    "suitesparse-spqr"
   ]
 }

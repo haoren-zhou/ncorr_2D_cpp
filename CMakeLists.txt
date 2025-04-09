@@ -7,10 +7,13 @@ cmake_minimum_required(VERSION 3.10)
 
 project(DICProject)
 
-# set(OpenCV_ROOT "${VCPKG_INSTALLED_DIR}/x64-windows/share/opencv4")
+set(OpenCV_ROOT "${VCPKG_INSTALLED_DIR}/x64-mingw-dynamic/share/opencv4")
+# Set ``CMAKE_MODULE_PATH`` to the parent folder where this module file is installed.
+message(STATUS "CMAKE_MODULE_PATH: ${CMAKE_MODULE_PATH}")
 find_package(OpenCV REQUIRED)
-# find_package(fftw3 CONFIG REQUIRED)
-# find_package(Ceres CONFIG REQUIRED)
+find_package(fftw3 REQUIRED)
+find_package(CHOLMOD REQUIRED)
+find_package(OpenBLAS REQUIRED)
 
 # Set files
 SET(ncorr_src ../src/ncorr.cpp ../src/Strain2D.cpp ../src/Disp2D.cpp ../src/Data2D.cpp ../src/ROI2D.cpp ../src/Image2D.cpp ../src/Array2D.cpp)
@@ -33,13 +36,15 @@ set_property(TARGET ncorr PROPERTY CXX_STANDARD_REQUIRED ON)
 # 	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
 # endif()
 
-# include_directories(${OpenCV_INCLUDE_DIRS})
-# add_executable(DICProjec1t ${ncorr_src})
 add_executable(DICProject ncorr_test.cpp)
 
 message(STATUS "OpenCV libraries: ${OpenCV_LIBS}")
+message(STATUS "fftw3 libraries: ${FFTW3_LIBRARIES}")
+
+target_link_directories(DICProject PRIVATE "${VCPKG_INSTALLED_DIR}/x64-mingw-dynamic/lib")
 
 target_link_libraries(DICProject ncorr)
 target_link_libraries(DICProject ${OpenCV_LIBS})
-# target_link_libraries(DICProject PUBLIC fftw3::fftw3)
-# target_link_libraries(DICProject PUBLIC SuiteSparse::amd SuiteSparse::btf SuiteSparse::klu SuiteSparse::ldl)
+target_link_libraries(DICProject ${FFTW3_LIBRARIES})
+target_link_libraries(DICProject OpenBLAS::OpenBLAS)
+target_link_libraries(DICProject SuiteSparse::CHOLMOD)
